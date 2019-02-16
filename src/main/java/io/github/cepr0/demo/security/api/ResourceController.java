@@ -6,14 +6,15 @@ import io.github.cepr0.crud.controller.OnUpdate;
 import io.github.cepr0.demo.security.domain.resource.ResourceService;
 import io.github.cepr0.demo.security.domain.resource.dto.ResourceRequest;
 import io.github.cepr0.demo.security.domain.resource.dto.ResourceResponse;
+import io.github.cepr0.demo.security.domain.user.dto.AuthUser;
 import io.github.cepr0.demo.security.model.Resource;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RequestMapping("resources")
@@ -27,9 +28,9 @@ public class ResourceController extends AbstractCrudController<Resource, Integer
 	@PostMapping
 	public ResourceResponse create(
 			@Validated(OnCreate.class) @RequestBody @NonNull final ResourceRequest request,
-			@NonNull final Principal principal
-	) {
-		Integer userId = Integer.valueOf(principal.getName());
+			@NonNull final Authentication authentication
+			) {
+		Integer userId = ((AuthUser) authentication.getPrincipal()).getUserId();
 		request.setUser(userId);
 		return super.create(request);
 	}

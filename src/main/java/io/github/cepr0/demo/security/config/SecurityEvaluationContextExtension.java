@@ -1,5 +1,6 @@
 package io.github.cepr0.demo.security.config;
 
+import io.github.cepr0.demo.security.domain.user.dto.AuthUser;
 import lombok.SneakyThrows;
 import org.springframework.data.spel.spi.EvaluationContextExtension;
 import org.springframework.data.spel.spi.Function;
@@ -40,6 +41,6 @@ public class SecurityEvaluationContextExtension implements EvaluationContextExte
 	@SuppressWarnings("WeakerAccess")
 	public static Integer userId() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		return Integer.valueOf(authentication.getName());
+		return ((AuthUser) authentication.getPrincipal()).getUserId();
 	}
 }

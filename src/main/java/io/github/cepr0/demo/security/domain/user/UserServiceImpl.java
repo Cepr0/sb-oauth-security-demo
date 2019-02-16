@@ -1,6 +1,7 @@
 package io.github.cepr0.demo.security.domain.user;
 
 import io.github.cepr0.crud.service.AbstractCrudService;
+import io.github.cepr0.demo.security.domain.user.dto.AuthUser;
 import io.github.cepr0.demo.security.domain.user.dto.UserRequest;
 import io.github.cepr0.demo.security.domain.user.dto.UserResponse;
 import io.github.cepr0.demo.security.model.User;
@@ -9,9 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import static io.github.cepr0.demo.security.model.User.Role.ADMIN;
-import static io.github.cepr0.demo.security.model.User.Role.USER;
 
 @Service
 public class UserServiceImpl extends AbstractCrudService<User, Integer, UserRequest, UserResponse> implements UserService {
@@ -28,20 +26,7 @@ public class UserServiceImpl extends AbstractCrudService<User, Integer, UserRequ
 	@Override
 	public UserDetails loadUserByUsername(@NonNull final String email) throws UsernameNotFoundException {
 		return userRepo.getByEmail(email)
-				.map(user -> {
-
-					String[] roles = user.getRole() == ADMIN ?
-							new String[]{USER.name(), ADMIN.name()} :
-							new String[]{USER.name()};
-
-					//noinspection ConstantConditions
-					return org.springframework.security.core.userdetails.User
-							.builder()
-							.username(user.getId().toString())
-							.password(user.getPassword())
-							.roles(roles)
-							.build();
-				})
-				.orElseThrow(() -> new UsernameNotFoundException("User not found by " + email));
+				.map(AuthUser::new)
+				.orElseThrow(() -> new UsernameNotFoundException("[!] User not found by " + email));
 	}
 }

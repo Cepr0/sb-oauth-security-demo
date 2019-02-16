@@ -4,6 +4,7 @@ import io.github.cepr0.crud.controller.AbstractCrudController;
 import io.github.cepr0.crud.controller.OnCreate;
 import io.github.cepr0.crud.controller.OnUpdate;
 import io.github.cepr0.demo.security.domain.user.UserService;
+import io.github.cepr0.demo.security.domain.user.dto.AuthUser;
 import io.github.cepr0.demo.security.domain.user.dto.UserRequest;
 import io.github.cepr0.demo.security.domain.user.dto.UserResponse;
 import io.github.cepr0.demo.security.model.User;
@@ -11,10 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 import java.util.List;
 
 @RequestMapping("users")
@@ -34,22 +35,22 @@ public class UserController extends AbstractCrudController<User, Integer, UserRe
 
 	@PatchMapping("/me")
 	public ResponseEntity<?> updateMe(
-			@NonNull final Principal principal,
+			@NonNull final Authentication authentication,
 			@Validated(OnUpdate.class) @RequestBody @NonNull final UserRequest request
 	) {
-		Integer userId = Integer.valueOf(principal.getName());
+		Integer userId = ((AuthUser) authentication.getPrincipal()).getUserId();
 		return super.update(userId, request);
 	}
 
 	@DeleteMapping("/me")
-	public ResponseEntity<?> deleteMe(@NonNull final Principal principal) {
-		Integer userId = Integer.valueOf(principal.getName());
+	public ResponseEntity<?> deleteMe(@NonNull final Authentication authentication) {
+		Integer userId = ((AuthUser) authentication.getPrincipal()).getUserId();
 		return super.delete(userId);
 	}
 
 	@GetMapping("/me")
-	public ResponseEntity<?> getMe(@NonNull final Principal principal) {
-		Integer userId = Integer.valueOf(principal.getName());
+	public ResponseEntity<?> getMe(@NonNull final Authentication authentication) {
+		Integer userId = ((AuthUser) authentication.getPrincipal()).getUserId();
 		return super.getOne(userId);
 	}
 
