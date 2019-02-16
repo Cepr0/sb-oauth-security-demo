@@ -9,6 +9,7 @@ import io.github.cepr0.demo.security.domain.resource.dto.ResourceResponse;
 import io.github.cepr0.demo.security.domain.user.dto.AuthUser;
 import io.github.cepr0.demo.security.model.Resource;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,7 @@ public class ResourceController extends AbstractCrudController<Resource, Integer
 		super(service);
 	}
 
+	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping
 	public ResourceResponse create(
 			@Validated(OnCreate.class) @RequestBody @NonNull final ResourceRequest request,
