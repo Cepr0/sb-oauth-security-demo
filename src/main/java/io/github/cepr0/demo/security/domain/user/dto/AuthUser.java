@@ -14,6 +14,9 @@ import static io.github.cepr0.demo.security.model.User.Role.USER;
 @EqualsAndHashCode(callSuper = false)
 public class AuthUser extends org.springframework.security.core.userdetails.User {
 
+	private static final String ROLE_USER = "ROLE_" + USER.name();
+	private static final String ROLE_ADMIN = "ROLE_" + ADMIN.name();
+
 	private Integer userId;
 
 	public AuthUser(User user) {
@@ -21,8 +24,8 @@ public class AuthUser extends org.springframework.security.core.userdetails.User
 				user.getEmail(),
 				user.getPassword(),
 				user.getRole() == ADMIN ?
-						List.of(new SimpleGrantedAuthority(USER.name()), new SimpleGrantedAuthority(ADMIN.name())) :
-						List.of(new SimpleGrantedAuthority(USER.name()))
+						List.of(new SimpleGrantedAuthority(ROLE_USER), new SimpleGrantedAuthority(ROLE_ADMIN)) :
+						List.of(new SimpleGrantedAuthority(ROLE_USER))
 		);
 		userId = user.getId();
 	}
